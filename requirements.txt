@@ -1,0 +1,11 @@
+exceptiongroup==1.1.1
+iniconfig==2.0.0
+packaging==23.1
+Pillow==9.5.0
+pluggy==1.0.0
+PyQt6==6.5.0
+PyQt6-Qt6==6.5.1
+PyQt6-sip==13.5.1
+pytest==7.3.1
+pytest-qt==4.2.0
+tomli==2.0.1
