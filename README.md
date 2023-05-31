@@ -1,0 +1,1 @@
+# pyqt6-webp-file-converter
