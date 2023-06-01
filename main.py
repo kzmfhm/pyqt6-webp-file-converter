@@ -8,7 +8,8 @@ import sys
 import webbrowser
 from PIL import Image
 import os
-
+import shutil
+from pathlib import Path
 
 class ImageLabel(QLabel):
     def __init__(self):
@@ -113,7 +114,7 @@ class MainWindow(QWidget):
         self.setWindowTitle("KZM IMAGE TO WEBP")
         self.setWindowIcon(QIcon("static/img/Vector.png"))
         self.setAcceptDrops(True)
-
+        
         main_layout = QVBoxLayout(self)
 
         self.image_label = ImageLabel()
@@ -163,7 +164,7 @@ class MainWindow(QWidget):
         font = QFont("Poppins", 14)
         self.save_files.setFont(font)
         button_layout.addWidget(self.save_files, alignment=Qt.AlignmentFlag.AlignRight)
-        
+        self.converted_files = [] 
         self.save_files.clicked.connect(self.save_file)
         self.save_files.hide()
 
@@ -196,8 +197,15 @@ class MainWindow(QWidget):
         self.counter = 0
         self.max_files_threshold = 14
         self.scrollbar_added = False
+           
+    def open_source_code(self):
+        webbrowser.open("https://github.com/kzmfhm/pyqt6-webp-file-converter")
+  
+    def add_scrollbar_to_list(self):
+        self.scrollbar_added = True
+        self.image_list.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
 
-    def save_file(self):
+    def convert_action(self):
         save_directory = os.path.join(os.path.expanduser("~"), "webp_files")  # Change the directory as per your needs
         if not os.path.exists(save_directory):
             os.makedirs(save_directory)
@@ -207,53 +215,15 @@ class MainWindow(QWidget):
             file_path = item.data(Qt.ItemDataRole.UserRole)
 
             try:
-                # Open the image file
                 image = Image.open(file_path)
+                webp_path = os.path.join(save_directory, os.path.basename(file_path))
+                webp_path = os.path.splitext(webp_path)[0] + ".webp"
 
-                # Convert the image to WebP format
-                webp_path = os.path.splitext(file_path)[0] + ".webp"
-                webp_save_path = os.path.join(save_directory, os.path.basename(webp_path))
-                image.save(webp_save_path, "WebP")
-
-                # Update the list item text to the WebP file path
-                item.setData(Qt.ItemDataRole.UserRole, webp_save_path)
-                item.setText(os.path.basename(webp_save_path))
-            except Exception as e:
-                # Handle any errors that occur during conversion
-                print(f"Error converting {file_path}: {str(e)}")
-        self.save_files.hide()
-        self.saved_files_successfully.show()
-        self.resize(900,600)
-      
-
-    def go_back_action(self):
-        self.go_back_button.hide()
-        self.save_files.hide()
-        self.saved_files_successfully.hide()
-        self.convert_button.hide()
-        self.image_list.hide()
-        self.total_files_label.hide()
-        self.image_label.show()
-        self.image_label.clear()
-        self.image_list.clear()
-        self.resize(900,600)
-
-    def add_scrollbar_to_list(self):
-        self.scrollbar_added = True
-        self.image_list.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
-
-    def convert_action(self):
-        for i in range(self.image_list.count()):
-            item = self.image_list.item(i)
-            file_path = item.data(Qt.ItemDataRole.UserRole)
-
-            try:
-                # Open the image file
-                image = Image.open(file_path)
-
-                # Convert the image to WebP format
-                webp_path = os.path.splitext(file_path)[0] + ".webp"
+                # Convert the image to WebP format and save it
                 image.save(webp_path, "WebP")
+
+                # Append the webp_path to the converted_files list
+                self.converted_files.append(webp_path)
 
                 # Update the list item text to the WebP file path
                 item.setData(Qt.ItemDataRole.UserRole, webp_path)
@@ -263,23 +233,55 @@ class MainWindow(QWidget):
                 print(f"Error converting {file_path}: {str(e)}")
 
         self.convert_button.hide()
-        self.resize(900,600)
+        self.resize(900, 600)
         self.go_back_button.show()
         self.save_files.show()
 
-    def open_source_code(self):
-        webbrowser.open("https://github.com/kzmfhm/pyqt6-webp-file-converter")
+    def save_file(self):
+        save_directory = os.path.join(os.path.expanduser("~"), "webp_files")  # Change the directory as per your needs
+        if not os.path.exists(save_directory):
+            os.makedirs(save_directory)
 
+        for file_path in self.converted_files:
+            try:
+                # Check the file extension
+                _, file_extension = os.path.splitext(file_path)
+                if file_extension.lower() == ".webp":
+                    # Open the image file
+                    image = Image.open(file_path)
+
+                    # Construct the webp_save_path
+                    webp_save_path = os.path.join(save_directory, os.path.basename(file_path))
+
+                    # Save the image as WebP format
+                    image.save(webp_save_path, "WebP")
+            except Exception as e:
+                # Handle any errors that occur during saving
+                print(f"Error saving {file_path} as WebP: {str(e)}")
+
+        self.save_files.hide()
+        self.saved_files_successfully.show()
+        self.resize(900, 600)
+
+
+    def go_back_action(self):
+            self.go_back_button.hide()
+            self.save_files.hide()
+            self.saved_files_successfully.hide()
+            self.convert_button.hide()
+            self.image_list.hide()
+            self.total_files_label.hide()
+            self.image_label.show()
+            self.image_label.clear()
+            self.image_list.clear()
+            self.resize(900,600)
+    
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls() and len(event.mimeData().urls()) > 0 and event.mimeData().urls()[0].isLocalFile():
             event.acceptProposedAction()
         else:
             event.ignore()
 
-    def drag_move_event(self, event: QDragEnterEvent):
-        event.acceptProposedAction()
-
-    
     def dropEvent(self, event: QDropEvent):
         if self.go_back_button.isVisible():
             event.ignore()
