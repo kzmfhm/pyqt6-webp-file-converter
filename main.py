@@ -8,8 +8,7 @@ import sys
 import webbrowser
 from PIL import Image
 import os
-import shutil
-from pathlib import Path
+
 
 class ImageLabel(QLabel):
     def __init__(self):
