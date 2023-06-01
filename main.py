@@ -140,22 +140,22 @@ class MainWindow(QWidget):
         font = QFont("Poppins", 14)
         self.convert_button.setFont(font)
         main_layout.addWidget(self.convert_button)
-        self.convert_button.clicked.connect(self.ConvertAction)
+        self.convert_button.clicked.connect(self.convert_action)
         self.convert_button.hide()
 
         button_layout = QHBoxLayout()
 
-        self.Go_Back_button = QPushButton()
-        self.Go_Back_button.setText("Go Back")
+        self.go_back_button = QPushButton()
+        self.go_back_button.setText("Go Back")
         font = QFont("Poppins", 14)
-        self.Go_Back_button.setFont(font)
-        self.Go_Back_button.setStyleSheet(
+        self.go_back_button.setFont(font)
+        self.go_back_button.setStyleSheet(
             "border: 1px; background-color: #3F4746; width:650px;height:35px;"
         )
-        button_layout.addWidget(self.Go_Back_button, alignment=Qt.AlignmentFlag.AlignLeft)
-        self.Go_Back_button.clicked.connect(self.GO_Back_Action)
+        button_layout.addWidget(self.go_back_button, alignment=Qt.AlignmentFlag.AlignLeft)
+        self.go_back_button.clicked.connect(self.go_back_action)
         button_layout.addStretch()
-        self.Go_Back_button.hide()
+        self.go_back_button.hide()
 
         self.save_files = QPushButton()
         self.save_files.setText("Save Files")
@@ -164,14 +164,14 @@ class MainWindow(QWidget):
         self.save_files.setFont(font)
         button_layout.addWidget(self.save_files, alignment=Qt.AlignmentFlag.AlignRight)
         
-        self.save_files.clicked.connect(self.Save_Files)
+        self.save_files.clicked.connect(self.save_file)
         self.save_files.hide()
 
 
         self.saved_files_successfully = QLabel()
-        self.saved_files_successfully.setText("webp-Files are Saved")
-        self.saved_files_successfully.setStyleSheet("border:1px;background-color:#146C94;width:180px;height:35px;")
-        font = QFont("Poppins", 14)
+        self.saved_files_successfully.setText("Files saved successfully")
+        self.saved_files_successfully.setStyleSheet("border:1px;background-color:#552D96;width:180px;height:35px;")
+        font = QFont("Poppins", 13)
         self.saved_files_successfully.setFont(font)
         button_layout.addWidget(self.saved_files_successfully, alignment=Qt.AlignmentFlag.AlignRight)
        
@@ -189,6 +189,7 @@ class MainWindow(QWidget):
         self.button = QPushButton()
         self.button.setIcon(QIcon("static/img/GithubIcon.png"))
         self.button.setStyleSheet("QPushButton { border: none; padding: 0px; }")
+        self.button.clicked.connect(self.open_source_code)
         additional_layout.addStretch()
         additional_layout.addWidget(self.button)
 
@@ -196,7 +197,7 @@ class MainWindow(QWidget):
         self.max_files_threshold = 14
         self.scrollbar_added = False
 
-    def Save_Files(self):
+    def save_file(self):
         save_directory = os.path.join(os.path.expanduser("~"), "webp_files")  # Change the directory as per your needs
         if not os.path.exists(save_directory):
             os.makedirs(save_directory)
@@ -225,8 +226,8 @@ class MainWindow(QWidget):
         self.resize(900,600)
       
 
-    def GO_Back_Action(self):
-        self.Go_Back_button.hide()
+    def go_back_action(self):
+        self.go_back_button.hide()
         self.save_files.hide()
         self.saved_files_successfully.hide()
         self.convert_button.hide()
@@ -241,7 +242,7 @@ class MainWindow(QWidget):
         self.scrollbar_added = True
         self.image_list.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
 
-    def ConvertAction(self):
+    def convert_action(self):
         for i in range(self.image_list.count()):
             item = self.image_list.item(i)
             file_path = item.data(Qt.ItemDataRole.UserRole)
@@ -263,11 +264,11 @@ class MainWindow(QWidget):
 
         self.convert_button.hide()
         self.resize(900,600)
-        self.Go_Back_button.show()
+        self.go_back_button.show()
         self.save_files.show()
 
     def open_source_code(self):
-        webbrowser.open("https://github.com/kzmfhm/webp-converter")
+        webbrowser.open("https://github.com/kzmfhm/pyqt6-webp-file-converter")
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls() and len(event.mimeData().urls()) > 0 and event.mimeData().urls()[0].isLocalFile():
@@ -280,7 +281,7 @@ class MainWindow(QWidget):
 
     
     def dropEvent(self, event: QDropEvent):
-        if self.Go_Back_button.isVisible():
+        if self.go_back_button.isVisible():
             event.ignore()
             return
         
@@ -322,6 +323,35 @@ if __name__ == "__main__":
     window.show()
 
     sys.exit(app.exec())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

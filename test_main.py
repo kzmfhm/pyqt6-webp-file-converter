@@ -13,7 +13,7 @@ def app(qtbot):
     
     yield main_window, qtbot
 
-def test_dropEvent(app):
+def test_drop_event(app):
     main_window, qtbot = app
 
     # Simulate a drop event by sending a key event
@@ -42,13 +42,13 @@ def test_convert_button(app):
     main_window, qtbot = app
 
     main_window.convert_button.click()
-    assert main_window.Go_Back_button.isVisible()
+    assert main_window.go_back_button.isVisible()
     main_window.image_label.hide()
     assert not main_window.image_label.isVisible()
 
-def test_Go_Back_button(app):
+def test_go_back_button(app):
     main_window, qtbot = app
-    main_window.Go_Back_button.click()
+    main_window.go_back_button.click()
     assert main_window.image_list.isHidden()
     assert not main_window.image_label.isHidden()
 
