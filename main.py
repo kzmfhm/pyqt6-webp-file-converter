@@ -72,17 +72,17 @@ class ImageLabel(QLabel):
         vbox.addWidget(button1, alignment=Qt.AlignmentFlag.AlignCenter)
         vbox.addStretch(1)
 
-    def dragEnterEvent(self, event: QDragEnterEvent):
+    def drag_enter_event(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls() and all(
             url.isLocalFile() and url.toLocalFile().lower().endswith(('.png', '.jpg', '.jpeg'))
             for url in event.mimeData().urls()
         ):
             event.acceptProposedAction()
 
-    def dragMoveEvent(self, event: QDragEnterEvent):
+    def drag_move_event(self, event: QDragEnterEvent):
         event.acceptProposedAction()
 
-    def dropEvent(self, event: QDropEvent):
+    def drop_event(self, event: QDropEvent):
         for url in event.mimeData().urls():
             file_path = url.toLocalFile()
             self.image_paths.append(file_path)
@@ -276,7 +276,7 @@ class MainWindow(QWidget):
         else:
             event.ignore()
 
-    def dragMoveEvent(self, event: QDragEnterEvent):
+    def drag_move_event(self, event: QDragEnterEvent):
         event.acceptProposedAction()
 
     
