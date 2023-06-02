@@ -1,3 +1,4 @@
+#!/home/khuzaima/Public/pyqt6-webp-file-converter/venv/bin/python3
 from PyQt6.QtCore import Qt, QMimeData
 from PyQt6.QtWidgets import (
     QLabel, QSizePolicy, QHBoxLayout, QVBoxLayout, QApplication,
@@ -205,7 +206,7 @@ class MainWindow(QWidget):
         self.image_list.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
 
     def convert_action(self):
-        save_directory = os.path.join(os.path.expanduser("~"), "webp_files")  # Change the directory as per your needs
+        save_directory = os.path.join(os.path.expanduser("~"), "Downloads")  # Change the directory as per your needs
         if not os.path.exists(save_directory):
             os.makedirs(save_directory)
 
@@ -237,7 +238,7 @@ class MainWindow(QWidget):
         self.save_files.show()
 
     def save_file(self):
-        save_directory = os.path.join(os.path.expanduser("~"), "webp_files")  # Change the directory as per your needs
+        save_directory = os.path.join(os.path.expanduser("~"), "Downloads")  # Change the directory as per your needs
         if not os.path.exists(save_directory):
             os.makedirs(save_directory)
 
@@ -324,63 +325,3 @@ if __name__ == "__main__":
     window.show()
 
     sys.exit(app.exec())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,3 +1,4 @@
+#!/home/khuzaima/Public/pyqt6-webp-file-converter/venv/bin/python3
 import pytest
 import main
 from main import ImageLabel, MainWindow
