@@ -1,108 +1,21 @@
 #!/home/khuzaima/Public/pyqt6-webp-file-converter/venv/bin/python3
-from PyQt6.QtCore import Qt, QMimeData
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
-    QLabel, QSizePolicy, QHBoxLayout, QVBoxLayout, QApplication,
-    QPushButton, QWidget, QListWidget, QListWidgetItem
+    QLabel,
+    QHBoxLayout,
+    QVBoxLayout,
+    QApplication,
+    QPushButton,
+    QWidget,
+    QListWidget,
+    QListWidgetItem,
 )
-from PyQt6.QtGui import QPixmap, QDragEnterEvent, QDropEvent, QIcon, QPainter, QFont
+from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QIcon, QFont
+from labels import ImageLabel
 import sys
 import webbrowser
 from PIL import Image
 import os
-
-
-class ImageLabel(QLabel):
-    def __init__(self):
-        super().__init__()
-
-        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.resize(850, 550)
-        self.setStyleSheet("""
-            QLabel {
-                border: 2px dashed #454545;
-                background-color: transparent;
-            }
-            QLabel#combinedLabel {
-                border: none;
-            }
-        """)
-
-        self.background_image_1 = QPixmap("static/img/cloud.png")
-        self.background_image_2 = QPixmap("static/img/arrow.png")
-        self.button1 = QPushButton()
-
-        self.image_paths = []
-        self.update_label()
-
-    def update_label(self):
-        vbox = QVBoxLayout(self)
-        vbox.addStretch(1)
-        hbox = QHBoxLayout()
-        hbox.addStretch(1)  # Add stretchable space to center-align the combined image
-        combined_label = QLabel()
-        combined_label.setObjectName("combinedLabel")
-
-        combined_image = QPixmap(self.background_image_1.size())
-        combined_image.fill(Qt.GlobalColor.transparent)
-
-        painter = QPainter(combined_image)
-        painter.drawPixmap(
-            combined_image.rect().center() - self.background_image_1.rect().center(),
-            self.background_image_1
-        )
-        painter.drawPixmap(
-            combined_image.rect().center() - self.background_image_2.rect().center(),
-            self.background_image_2
-        )
-        painter.end()
-
-        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.resize(850, 550)
-
-        combined_label.setPixmap(combined_image)
-
-        hbox.addWidget(combined_label)
-        hbox.addStretch(1)
-        vbox.addLayout(hbox)
-
-        button1 = QPushButton("Drag and Drop here")
-        button1.setStyleSheet("QPushButton { border: none; }")
-        font = QFont("Roboto", 30)
-        button1.setFont(font)
-
-        vbox.addWidget(button1, alignment=Qt.AlignmentFlag.AlignCenter)
-        vbox.addStretch(1)
-
-    def drag_enter_event(self, event: QDragEnterEvent):
-        if event.mimeData().hasUrls() and all(
-            url.isLocalFile() and url.toLocalFile().lower().endswith(('.png', '.jpg', '.jpeg'))
-            for url in event.mimeData().urls()
-        ):
-            event.acceptProposedAction()
-
-    def drag_move_event(self, event: QDragEnterEvent):
-        event.acceptProposedAction()
-
-    def drop_event(self, event: QDropEvent):
-        for url in event.mimeData().urls():
-            file_path = url.toLocalFile()
-            self.image_paths.append(file_path)
-            self.set_image(file_path)
-
-        event.acceptProposedAction()
-
-    def set_image(self, file_path):
-        pixmap = QPixmap(file_path)
-        if pixmap.isNull():
-            self.setText("Invalid image file")
-        else:
-            self.setPixmap(
-                pixmap.scaled(
-                    self.size(),
-                    Qt.AspectRatioMode.KeepAspectRatio,
-                    Qt.TransformationMode.SmoothTransformation
-                )
-            )
 
 
 class MainWindow(QWidget):
@@ -114,7 +27,7 @@ class MainWindow(QWidget):
         self.setWindowTitle("KZM IMAGE TO WEBP")
         self.setWindowIcon(QIcon("static/img/Vector.png"))
         self.setAcceptDrops(True)
-        
+
         main_layout = QVBoxLayout(self)
 
         self.image_label = ImageLabel()
@@ -130,7 +43,9 @@ class MainWindow(QWidget):
         self.total_files_label.setStyleSheet("color: white; font-size: 16px;")
         font = QFont("Poppins", 16)
         self.total_files_label.setFont(font)
-        main_layout.addWidget(self.total_files_label, alignment=Qt.AlignmentFlag.AlignLeft)
+        main_layout.addWidget(
+            self.total_files_label, alignment=Qt.AlignmentFlag.AlignLeft
+        )
         self.total_files_label.hide()
 
         self.convert_button = QPushButton()
@@ -153,29 +68,36 @@ class MainWindow(QWidget):
         self.go_back_button.setStyleSheet(
             "border: 1px; background-color: #3F4746; width:650px;height:35px;"
         )
-        button_layout.addWidget(self.go_back_button, alignment=Qt.AlignmentFlag.AlignLeft)
+        button_layout.addWidget(
+            self.go_back_button, alignment=Qt.AlignmentFlag.AlignLeft
+        )
         self.go_back_button.clicked.connect(self.go_back_action)
         button_layout.addStretch()
         self.go_back_button.hide()
 
         self.save_files = QPushButton()
         self.save_files.setText("Save Files")
-        self.save_files.setStyleSheet("border:1px;background-color:#552D96;width:200px;height:35px;")
+        self.save_files.setStyleSheet(
+            "border:1px;background-color:#552D96;width:200px;height:35px;"
+        )
         font = QFont("Poppins", 14)
         self.save_files.setFont(font)
         button_layout.addWidget(self.save_files, alignment=Qt.AlignmentFlag.AlignRight)
-        self.converted_files = [] 
+        self.converted_files = []
         self.save_files.clicked.connect(self.save_file)
         self.save_files.hide()
 
-
         self.saved_files_successfully = QLabel()
         self.saved_files_successfully.setText("Files saved successfully")
-        self.saved_files_successfully.setStyleSheet("border:1px;background-color:#552D96;width:180px;height:35px;")
+        self.saved_files_successfully.setStyleSheet(
+            "border:1px;background-color:#552D96;width:180px;height:35px;"
+        )
         font = QFont("Poppins", 13)
         self.saved_files_successfully.setFont(font)
-        button_layout.addWidget(self.saved_files_successfully, alignment=Qt.AlignmentFlag.AlignRight)
-       
+        button_layout.addWidget(
+            self.saved_files_successfully, alignment=Qt.AlignmentFlag.AlignRight
+        )
+
         self.saved_files_successfully.hide()
 
         main_layout.addLayout(button_layout)
@@ -197,16 +119,18 @@ class MainWindow(QWidget):
         self.counter = 0
         self.max_files_threshold = 14
         self.scrollbar_added = False
-           
+
     def open_source_code(self):
         webbrowser.open("https://github.com/kzmfhm/pyqt6-webp-file-converter")
-  
+
     def add_scrollbar_to_list(self):
         self.scrollbar_added = True
         self.image_list.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
 
     def convert_action(self):
-        save_directory = os.path.join(os.path.expanduser("~"), "Downloads")  # Change the directory as per your needs
+        save_directory = os.path.join(
+            os.path.expanduser("~"), "Downloads"
+        )  # Change the directory as per your needs
         if not os.path.exists(save_directory):
             os.makedirs(save_directory)
 
@@ -238,7 +162,9 @@ class MainWindow(QWidget):
         self.save_files.show()
 
     def save_file(self):
-        save_directory = os.path.join(os.path.expanduser("~"), "Downloads")  # Change the directory as per your needs
+        save_directory = os.path.join(
+            os.path.expanduser("~"), "Downloads"
+        )  # Change the directory as per your needs
         if not os.path.exists(save_directory):
             os.makedirs(save_directory)
 
@@ -251,7 +177,9 @@ class MainWindow(QWidget):
                     image = Image.open(file_path)
 
                     # Construct the webp_save_path
-                    webp_save_path = os.path.join(save_directory, os.path.basename(file_path))
+                    webp_save_path = os.path.join(
+                        save_directory, os.path.basename(file_path)
+                    )
 
                     # Save the image as WebP format
                     image.save(webp_save_path, "WebP")
@@ -263,21 +191,24 @@ class MainWindow(QWidget):
         self.saved_files_successfully.show()
         self.resize(900, 600)
 
-
     def go_back_action(self):
-            self.go_back_button.hide()
-            self.save_files.hide()
-            self.saved_files_successfully.hide()
-            self.convert_button.hide()
-            self.image_list.hide()
-            self.total_files_label.hide()
-            self.image_label.show()
-            self.image_label.clear()
-            self.image_list.clear()
-            self.resize(900,600)
-    
+        self.go_back_button.hide()
+        self.save_files.hide()
+        self.saved_files_successfully.hide()
+        self.convert_button.hide()
+        self.image_list.hide()
+        self.total_files_label.hide()
+        self.image_label.show()
+        self.image_label.clear()
+        self.image_list.clear()
+        self.resize(900, 600)
+
     def dragEnterEvent(self, event: QDragEnterEvent):
-        if event.mimeData().hasUrls() and len(event.mimeData().urls()) > 0 and event.mimeData().urls()[0].isLocalFile():
+        if (
+            event.mimeData().hasUrls()
+            and len(event.mimeData().urls()) > 0
+            and event.mimeData().urls()[0].isLocalFile()
+        ):
             event.acceptProposedAction()
         else:
             event.ignore()
@@ -286,11 +217,10 @@ class MainWindow(QWidget):
         if self.go_back_button.isVisible():
             event.ignore()
             return
-        
 
         for url in event.mimeData().urls():
             file_path = url.toLocalFile()
-            if file_path.lower().endswith(('.png', '.jpg', '.jpeg')):
+            if file_path.lower().endswith((".png", ".jpg", ".jpeg")):
                 self.image_label.set_image(file_path)
                 self.image_list.show()
 
@@ -302,19 +232,22 @@ class MainWindow(QWidget):
                 self.image_list.setAlternatingRowColors(True)
 
                 # Set stylesheet for each item in the QListWidget
-                item_style = (
-                    "QListWidget::item { padding: 10px; background: #212E2E; border: 1px solid #445858; margin: 5px; }"
-                )
+                item_style = "QListWidget::item { padding: 10px; background: #212E2E; border: 1px solid #445858; margin: 5px; }"
                 self.image_list.setStyleSheet(item_style)
 
                 self.image_label.hide()
-                if not self.scrollbar_added and self.image_list.count() >= self.max_files_threshold:
+                if (
+                    not self.scrollbar_added
+                    and self.image_list.count() >= self.max_files_threshold
+                ):
                     self.add_scrollbar_to_list()
 
                 self.total_files_label.show()
                 self.convert_button.show()
-                self.total_files_label.setText(f"Total Files: {self.image_list.count()}")
-                self.resize(900,600)
+                self.total_files_label.setText(
+                    f"Total Files: {self.image_list.count()}"
+                )
+                self.resize(900, 600)
         event.acceptProposedAction()
 
 
