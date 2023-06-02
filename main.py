@@ -1,3 +1,4 @@
+#!/home/khuzaima/Public/pyqt6-webp-file-converter/venv/bin/python3
 from PyQt6.QtCore import Qt, QMimeData
 from PyQt6.QtWidgets import (
     QLabel, QSizePolicy, QHBoxLayout, QVBoxLayout, QApplication,
@@ -72,17 +73,17 @@ class ImageLabel(QLabel):
         vbox.addWidget(button1, alignment=Qt.AlignmentFlag.AlignCenter)
         vbox.addStretch(1)
 
-    def dragEnterEvent(self, event: QDragEnterEvent):
+    def drag_enter_event(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls() and all(
             url.isLocalFile() and url.toLocalFile().lower().endswith(('.png', '.jpg', '.jpeg'))
             for url in event.mimeData().urls()
         ):
             event.acceptProposedAction()
 
-    def dragMoveEvent(self, event: QDragEnterEvent):
+    def drag_move_event(self, event: QDragEnterEvent):
         event.acceptProposedAction()
 
-    def dropEvent(self, event: QDropEvent):
+    def drop_event(self, event: QDropEvent):
         for url in event.mimeData().urls():
             file_path = url.toLocalFile()
             self.image_paths.append(file_path)
@@ -113,7 +114,7 @@ class MainWindow(QWidget):
         self.setWindowTitle("KZM IMAGE TO WEBP")
         self.setWindowIcon(QIcon("static/img/Vector.png"))
         self.setAcceptDrops(True)
-
+        
         main_layout = QVBoxLayout(self)
 
         self.image_label = ImageLabel()
@@ -140,22 +141,22 @@ class MainWindow(QWidget):
         font = QFont("Poppins", 14)
         self.convert_button.setFont(font)
         main_layout.addWidget(self.convert_button)
-        self.convert_button.clicked.connect(self.ConvertAction)
+        self.convert_button.clicked.connect(self.convert_action)
         self.convert_button.hide()
 
         button_layout = QHBoxLayout()
 
-        self.Go_Back_button = QPushButton()
-        self.Go_Back_button.setText("Go Back")
+        self.go_back_button = QPushButton()
+        self.go_back_button.setText("Go Back")
         font = QFont("Poppins", 14)
-        self.Go_Back_button.setFont(font)
-        self.Go_Back_button.setStyleSheet(
+        self.go_back_button.setFont(font)
+        self.go_back_button.setStyleSheet(
             "border: 1px; background-color: #3F4746; width:650px;height:35px;"
         )
-        button_layout.addWidget(self.Go_Back_button, alignment=Qt.AlignmentFlag.AlignLeft)
-        self.Go_Back_button.clicked.connect(self.GO_Back_Action)
+        button_layout.addWidget(self.go_back_button, alignment=Qt.AlignmentFlag.AlignLeft)
+        self.go_back_button.clicked.connect(self.go_back_action)
         button_layout.addStretch()
-        self.Go_Back_button.hide()
+        self.go_back_button.hide()
 
         self.save_files = QPushButton()
         self.save_files.setText("Save Files")
@@ -163,15 +164,15 @@ class MainWindow(QWidget):
         font = QFont("Poppins", 14)
         self.save_files.setFont(font)
         button_layout.addWidget(self.save_files, alignment=Qt.AlignmentFlag.AlignRight)
-        
-        self.save_files.clicked.connect(self.Save_Files)
+        self.converted_files = [] 
+        self.save_files.clicked.connect(self.save_file)
         self.save_files.hide()
 
 
         self.saved_files_successfully = QLabel()
-        self.saved_files_successfully.setText("webp-Files are Saved")
-        self.saved_files_successfully.setStyleSheet("border:1px;background-color:#146C94;width:180px;height:35px;")
-        font = QFont("Poppins", 14)
+        self.saved_files_successfully.setText("Files saved successfully")
+        self.saved_files_successfully.setStyleSheet("border:1px;background-color:#552D96;width:180px;height:35px;")
+        font = QFont("Poppins", 13)
         self.saved_files_successfully.setFont(font)
         button_layout.addWidget(self.saved_files_successfully, alignment=Qt.AlignmentFlag.AlignRight)
        
@@ -189,15 +190,23 @@ class MainWindow(QWidget):
         self.button = QPushButton()
         self.button.setIcon(QIcon("static/img/GithubIcon.png"))
         self.button.setStyleSheet("QPushButton { border: none; padding: 0px; }")
+        self.button.clicked.connect(self.open_source_code)
         additional_layout.addStretch()
         additional_layout.addWidget(self.button)
 
         self.counter = 0
         self.max_files_threshold = 14
         self.scrollbar_added = False
+           
+    def open_source_code(self):
+        webbrowser.open("https://github.com/kzmfhm/pyqt6-webp-file-converter")
+  
+    def add_scrollbar_to_list(self):
+        self.scrollbar_added = True
+        self.image_list.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
 
-    def Save_Files(self):
-        save_directory = os.path.join(os.path.expanduser("~"), "webp_files")  # Change the directory as per your needs
+    def convert_action(self):
+        save_directory = os.path.join(os.path.expanduser("~"), "Downloads")  # Change the directory as per your needs
         if not os.path.exists(save_directory):
             os.makedirs(save_directory)
 
@@ -206,53 +215,15 @@ class MainWindow(QWidget):
             file_path = item.data(Qt.ItemDataRole.UserRole)
 
             try:
-                # Open the image file
                 image = Image.open(file_path)
+                webp_path = os.path.join(save_directory, os.path.basename(file_path))
+                webp_path = os.path.splitext(webp_path)[0] + ".webp"
 
-                # Convert the image to WebP format
-                webp_path = os.path.splitext(file_path)[0] + ".webp"
-                webp_save_path = os.path.join(save_directory, os.path.basename(webp_path))
-                image.save(webp_save_path, "WebP")
-
-                # Update the list item text to the WebP file path
-                item.setData(Qt.ItemDataRole.UserRole, webp_save_path)
-                item.setText(os.path.basename(webp_save_path))
-            except Exception as e:
-                # Handle any errors that occur during conversion
-                print(f"Error converting {file_path}: {str(e)}")
-        self.save_files.hide()
-        self.saved_files_successfully.show()
-        self.resize(900,600)
-      
-
-    def GO_Back_Action(self):
-        self.Go_Back_button.hide()
-        self.save_files.hide()
-        self.saved_files_successfully.hide()
-        self.convert_button.hide()
-        self.image_list.hide()
-        self.total_files_label.hide()
-        self.image_label.show()
-        self.image_label.clear()
-        self.image_list.clear()
-        self.resize(900,600)
-
-    def add_scrollbar_to_list(self):
-        self.scrollbar_added = True
-        self.image_list.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
-
-    def ConvertAction(self):
-        for i in range(self.image_list.count()):
-            item = self.image_list.item(i)
-            file_path = item.data(Qt.ItemDataRole.UserRole)
-
-            try:
-                # Open the image file
-                image = Image.open(file_path)
-
-                # Convert the image to WebP format
-                webp_path = os.path.splitext(file_path)[0] + ".webp"
+                # Convert the image to WebP format and save it
                 image.save(webp_path, "WebP")
+
+                # Append the webp_path to the converted_files list
+                self.converted_files.append(webp_path)
 
                 # Update the list item text to the WebP file path
                 item.setData(Qt.ItemDataRole.UserRole, webp_path)
@@ -262,25 +233,57 @@ class MainWindow(QWidget):
                 print(f"Error converting {file_path}: {str(e)}")
 
         self.convert_button.hide()
-        self.resize(900,600)
-        self.Go_Back_button.show()
+        self.resize(900, 600)
+        self.go_back_button.show()
         self.save_files.show()
 
-    def open_source_code(self):
-        webbrowser.open("https://github.com/kzmfhm/webp-converter")
+    def save_file(self):
+        save_directory = os.path.join(os.path.expanduser("~"), "Downloads")  # Change the directory as per your needs
+        if not os.path.exists(save_directory):
+            os.makedirs(save_directory)
 
+        for file_path in self.converted_files:
+            try:
+                # Check the file extension
+                _, file_extension = os.path.splitext(file_path)
+                if file_extension.lower() == ".webp":
+                    # Open the image file
+                    image = Image.open(file_path)
+
+                    # Construct the webp_save_path
+                    webp_save_path = os.path.join(save_directory, os.path.basename(file_path))
+
+                    # Save the image as WebP format
+                    image.save(webp_save_path, "WebP")
+            except Exception as e:
+                # Handle any errors that occur during saving
+                print(f"Error saving {file_path} as WebP: {str(e)}")
+
+        self.save_files.hide()
+        self.saved_files_successfully.show()
+        self.resize(900, 600)
+
+
+    def go_back_action(self):
+            self.go_back_button.hide()
+            self.save_files.hide()
+            self.saved_files_successfully.hide()
+            self.convert_button.hide()
+            self.image_list.hide()
+            self.total_files_label.hide()
+            self.image_label.show()
+            self.image_label.clear()
+            self.image_list.clear()
+            self.resize(900,600)
+    
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls() and len(event.mimeData().urls()) > 0 and event.mimeData().urls()[0].isLocalFile():
             event.acceptProposedAction()
         else:
             event.ignore()
 
-    def dragMoveEvent(self, event: QDragEnterEvent):
-        event.acceptProposedAction()
-
-    
     def dropEvent(self, event: QDropEvent):
-        if self.Go_Back_button.isVisible():
+        if self.go_back_button.isVisible():
             event.ignore()
             return
         
@@ -322,34 +325,3 @@ if __name__ == "__main__":
     window.show()
 
     sys.exit(app.exec())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

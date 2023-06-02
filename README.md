@@ -27,6 +27,7 @@
 - Drag and drop image files onto the application.
 - Click the "Convert" button to convert the selected image files.
 - Click the "Save Files" button to save the converted WebP files.
+- Checkout Downloads because these webp files are saved in Downloads.
 
 
 ## ⭐️ Support

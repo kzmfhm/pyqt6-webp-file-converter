@@ -1,8 +1,11 @@
+altgraph==0.17.3
 exceptiongroup==1.1.1
 iniconfig==2.0.0
 packaging==23.1
 Pillow==9.5.0
 pluggy==1.0.0
+pyinstaller==5.11.0
+pyinstaller-hooks-contrib==2023.3
 PyQt6==6.5.0
 PyQt6-Qt6==6.5.1
 PyQt6-sip==13.5.1
