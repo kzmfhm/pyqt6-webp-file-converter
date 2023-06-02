@@ -13,7 +13,7 @@
 
 ## How to Run 🚀
 
-- Clone the repository: git clone https://github.com/kzmfhm/webp-converter.git
+- Clone the repository: git clone https://github.com/kzmfhm/pyqt6-webp-file-converter.git
 - Navigate to the project directory: cd webp-converter
 - Create a virtual environment (optional): python3 -m venv venv
 - Activate the virtual environment:
