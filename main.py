@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QWidget,
     QListWidget,
-    QListWidgetItem,
+    QListWidgetItem,QMessageBox,QSizePolicy
 )
 from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QIcon, QFont
 from labels import ImageLabel
@@ -87,19 +87,6 @@ class MainWindow(QWidget):
         self.save_files.clicked.connect(self.save_file)
         self.save_files.hide()
 
-        self.saved_files_successfully = QLabel()
-        self.saved_files_successfully.setText("Files saved successfully")
-        self.saved_files_successfully.setStyleSheet(
-            "border:1px;background-color:#552D96;width:180px;height:35px;"
-        )
-        font = QFont("Poppins", 13)
-        self.saved_files_successfully.setFont(font)
-        button_layout.addWidget(
-            self.saved_files_successfully, alignment=Qt.AlignmentFlag.AlignRight
-        )
-
-        self.saved_files_successfully.hide()
-
         main_layout.addLayout(button_layout)
 
         additional_layout = QHBoxLayout()
@@ -161,7 +148,7 @@ class MainWindow(QWidget):
         self.go_back_button.show()
         self.save_files.show()
 
-    def save_file(self):
+    def save_file(self,s):
         save_directory = os.path.join(
             os.path.expanduser("~"), "Downloads"
         )  # Change the directory as per your needs
@@ -187,14 +174,16 @@ class MainWindow(QWidget):
                 # Handle any errors that occur during saving
                 print(f"Error saving {file_path} as WebP: {str(e)}")
 
-        self.save_files.hide()
-        self.saved_files_successfully.show()
-        self.resize(900, 600)
+        dlg = QMessageBox(self)
+        dlg.setWindowTitle("Checkout Save Files!")
+        dlg.setText("WebP files are saved in Downloads.")
+        dlg.setStandardButtons(QMessageBox.StandardButton.Ok)
+        dlg.exec()
 
+        self.resize(900, 600)
     def go_back_action(self):
         self.go_back_button.hide()
         self.save_files.hide()
-        self.saved_files_successfully.hide()
         self.convert_button.hide()
         self.image_list.hide()
         self.total_files_label.hide()
