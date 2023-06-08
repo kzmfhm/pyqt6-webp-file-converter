@@ -4,6 +4,18 @@
 - User-friendly interface for selecting and converting multiple image files at once. 
 - Strickly following the design from Figma, prepared [here](https://www.figma.com/file/HnLPap7IYzPJAhKSRwNFyE/Convert-to-WebP?type=design&node-id=0-1&t=LnXqhTRKqZVdM4mT-0)
 
+
+## Screenshots
+
+### Drag and Drop
+![1_main](images/README/1_main.png)
+
+### Visibility
+![2_files](images/README/2_files.png)
+
+### On Success 
+![3_on_success](images/README/3_on_success.png)
+
 ## Features 💥
 
 - Drag and drop support
