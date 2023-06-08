@@ -7,13 +7,13 @@
 
 ## Screenshots
 
-# Drag and Drop
+### Drag and Drop
 ![1_main](images/README/1_main.png)
 
-# Visibility
+### Visibility
 ![2_files](images/README/2_files.png)
 
-# On Success 
+### On Success 
 ![3_on_success](images/README/3_on_success.png)
 
 ## Features 💥
