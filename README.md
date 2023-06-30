@@ -33,7 +33,7 @@
         For Windows: venv\Scripts\activate.bat
 - Install the required dependencies: pip install -r requirements.txt
 - Run command in root directory: python3 main.py
-
+ 
 ## Usage 📃
 
 - Drag and drop image files onto the application.
@@ -41,6 +41,9 @@
 - Click the "Save Files" button to save the converted WebP files.
 - Checkout Downloads because these webp files are saved in Downloads.
 
+## Note 📃
+
+- After activating venv environment,make sure to run "python3 main.py" file within venv and static folder directory.If you are not doing this background images were not displayed properly.
 
 ## ⭐️ Support
 
