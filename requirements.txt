@@ -2,7 +2,7 @@ altgraph==0.17.3
 exceptiongroup==1.1.1
 iniconfig==2.0.0
 packaging==23.1
-Pillow==9.5.0
+Pillow==10.0.1
 pluggy==1.0.0
 pyinstaller==5.11.0
 pyinstaller-hooks-contrib==2023.3
