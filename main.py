@@ -25,6 +25,7 @@ class MainWindow(QWidget):
         self.setContentsMargins(10, 10, 10, 10)
         self.setStyleSheet("background-color: #1C2626;")
         self.setWindowTitle("KZM IMAGE TO WEBP")
+    
         self.setWindowIcon(QIcon("static/img/Vector.png"))
         self.setAcceptDrops(True)
 
@@ -221,8 +222,10 @@ class MainWindow(QWidget):
                 self.image_list.setAlternatingRowColors(True)
 
                 # Set stylesheet for each item in the QListWidget
-                item_style = "QListWidget::item { padding: 10px; background: #212E2E; border: 1px solid #445858; margin: 5px; }"
+                item_style = "QListWidget:item { padding: 7px; background: #212E2E; border: 5px solid #333; }"
                 self.image_list.setStyleSheet(item_style)
+
+
 
                 self.image_label.hide()
                 if (
