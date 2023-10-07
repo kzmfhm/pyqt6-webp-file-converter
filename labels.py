@@ -66,7 +66,7 @@ class ImageLabel(QLabel):
         vbox.addLayout(hbox)
 
         button1 = QPushButton("Drag and Drop here")
-        button1.setStyleSheet("QPushButton { border: none; }")
+        button1.setStyleSheet("QPushButton { border: none; color:white }")
         font = QFont("Roboto", 30)
         button1.setFont(font)
 
